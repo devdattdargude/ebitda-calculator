@@ -33,6 +33,7 @@
             <select id="scenarioType">
                 <option value="ACTUAL">Actual</option>
                 <option value="BUDGET">Budget</option>
+                <option value="FORECAST">Forecast</option>
             </select>
             
             <h3>Cloud Sync</h3>
@@ -132,6 +133,32 @@ Executive Mode
         </div>
         
         <div class="card">
+            <h3>Forecast Drivers</h3>
+            
+            <input id="revGrowth"
+                   placeholder="Revenue Growth %">
+            <input id="costGrowth"
+                   placeholder="Cost Growth %">
+            <input id="forecastPeriods"
+                   placeholder="Periods (months)">
+            
+            <button onclick="applyForecast()">
+Apply Forecast
+</button>
+            <div id="forecastOutput"></div>
+            
+            <label>
+<input type="checkbox"
+ id="forecastMode">
+Forecast Mode
+</label>
+
+<div>
+Submitted Awaiting Approval:
+ <span id="pipelineCount"></span>
+</div>
+        
+        <div class="card">
             <h2>Executive Dashboard</h2>
             
             <div>Total Approved EBITDA:
@@ -162,10 +189,6 @@ Show Variance
 
 <div id="varianceOutput"></div>
 
-<div>
-Submitted Awaiting Approval:
- <span id="pipelineCount"></span>
-</div>
         </div>
         
         <div class="card">

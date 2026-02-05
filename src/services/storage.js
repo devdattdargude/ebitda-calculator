@@ -36,7 +36,12 @@ export const StorageService = {
         role: RoleService.currentRole,
         version: "v6",
         savedAt: new Date().toISOString(),
-        approvalStatus: scenario.status
+        approvalStatus: scenario.status,
+        forecastDrivers: {
+          revGrowth: drivers.revGrowth,
+          costGrowth: drivers.costGrowth,
+          periods: drivers.periods
+        }
       }
     });
 

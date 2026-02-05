@@ -3,6 +3,7 @@ import { FinanceEngine } from "../core/finance-engine.js";
 import { Formatter } from "../utils/formatting.js";
 import { StorageService } from "../services/storage.js";
 import { FormulaLock } from "../services/formula-lock.js";
+import { ForecastService } from "../services/forecast-service.js";
 
 export const CalculatorController = {
 
@@ -17,7 +18,7 @@ export const CalculatorController = {
     return errors;
   },
 
-  calculateAll(data) {
+  calculateAll(data, isForecastMode = false) {
 
     if (!FormulaLock.isLocked()) {
       console.warn("Formula unlocked mode");
@@ -80,7 +81,17 @@ export const CalculatorController = {
   },
 
   saveRun(name, data, results, property) {
-    StorageService.saveScenario(name, data, results, property);
+    this.saveScenario(name, data, results, property);
+  },
+
+  saveScenario(name, data, results, property, isForecastMode) {
+
+    if (isForecastMode) {
+      data = this.applyForecast(data);
+      scenario.scenarioType = "FORECAST";
+    }
+
+    return StorageService.saveScenario(name, data, results, property);
   }
 
 };

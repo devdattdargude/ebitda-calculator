@@ -13,13 +13,15 @@ export function renderExecutive() {
   kpiPending.innerText =
     ExecutiveService.pendingCount();
 
-  document.getElementById("pipelineCount").innerText =
-    ExecutiveService.pendingCount();
-
   renderRank();
   renderRisk();
+  renderForecast();
 
-  // Disable all input controls in executive mode
+  forecastKpi.innerText =
+    ExecutiveService.totalVariance();
+
+  pipelineCount.innerText =
+    ExecutiveService.pendingCount();
   document
     .querySelectorAll("input,button,select")
     .forEach(e => e.disabled = true);

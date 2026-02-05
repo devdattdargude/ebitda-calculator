@@ -135,4 +135,22 @@ r.get("/variance", async (req,res)=>{
   res.send(rows.rows);
 });
 
+r.get("/forecast", async (req,res)=>{
+
+  const { property } = req.query;
+
+  const rows = await db.query(
+    `select
+      case when scenario_type='FORECAST'
+          then (results->>'ebitda')::numeric end) as forecast
+   from scenarios s
+   join scenario_versions v
+     on s.id=v.scenario_id
+     where s.property=$1
+    order by s.updated_at desc`
+  );
+
+  res.send(rows.rows);
+});
+
 module.exports = r;
