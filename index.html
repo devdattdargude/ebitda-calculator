@@ -12,6 +12,17 @@
         <h1>EBITDA Calculator V4</h1>
         
         <div class="card">
+            <h2>Controls</h2>
+            <label for="roleSelect">Role</label>
+            <select id="roleSelect">
+                <option value="viewer">Viewer</option>
+                <option value="analyst">Analyst</option>
+                <option value="admin">Admin</option>
+            </select>
+            <button id="lockToggle">Toggle Formula Lock</button>
+        </div>
+        
+        <div class="card">
             <h2>Inputs</h2>
             
             <label for="scenarioName">Scenario Name</label>
@@ -85,6 +96,7 @@
             <h3>Dashboard</h3>
             <div>Total Scenarios: <span id="scenarioCount"></span></div>
             <div>Average EBITDA: <span id="avgEbitda"></span></div>
+            <div id="auditPanel"></div>
             <canvas id="trendChart"></canvas>
             <canvas id="propertyChart"></canvas>
             <button onclick="renderCharts()">Refresh Charts</button>
@@ -102,6 +114,9 @@ import {
   renderTrendChart,
   renderPropertyChart
 } from "./src/ui/dashboard-ui.js";
+import { bindRoleSelector } from "./src/ui/role-ui.js";
+import { FormulaLock } from "../src/services/formula-lock.js";
+import { RoleService } from "../src/services/role-service.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
@@ -125,6 +140,11 @@ window.renderPortfolio = function () {
       .join("<br>");
 };
 
+window.showAudit = function(s) {
+  auditPanel.innerText =
+    `${s.audit.role} | ${s.audit.savedAt}`;
+};
+
 function loadProperties() {
   propertySelect.innerHTML =
     PropertyRegistry.getAll()
@@ -133,6 +153,24 @@ function loadProperties() {
 }
 
 loadProperties();
+
+bindRoleSelector("roleSelect");
+
+if (RoleService.isViewer()) {
+  document
+    .querySelectorAll("button")
+    .forEach(b => b.disabled = true);
+}
+
+lockToggle.onclick = () => {
+
+  if (!RoleService.isAdmin()) {
+    alert("Only admin can unlock formulas");
+    return;
+  }
+
+  FormulaLock.toggle();
+};
 
 window.runCalc = () => {
 

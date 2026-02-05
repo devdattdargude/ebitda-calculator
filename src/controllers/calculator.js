@@ -2,6 +2,7 @@ import { validateField } from "../core/validation.js";
 import { FinanceEngine } from "../core/finance-engine.js";
 import { Formatter } from "../utils/formatting.js";
 import { StorageService } from "../services/storage.js";
+import { FormulaLock } from "../services/formula-lock.js";
 
 export const CalculatorController = {
 
@@ -17,6 +18,10 @@ export const CalculatorController = {
   },
 
   calculateAll(data) {
+
+    if (!FormulaLock.isLocked()) {
+      console.warn("Formula unlocked mode");
+    }
 
     const clean = {};
     for (const k in data) {
