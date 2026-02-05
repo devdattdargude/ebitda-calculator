@@ -134,19 +134,18 @@ Executive Mode
         </div>
         
         <div class="card">
-            <h3>What-If Sensitivity Lab</h3>
+            <h3>MIS Auto Report</h3>
             
-            <input id="whatIfRevenuePct"
-                   placeholder="Revenue Change %">
-            <input id="whatIfCostPct"
-                   placeholder="Cost Change %">
-            <input id="whatIfSalaryPct"
-                   placeholder="Salary Change %">
-            
-            <button onclick="runWhatIf()">
-Run What-If
+            <button onclick="generateMIS()">
+Generate MIS
 </button>
-            <div id="whatIfOutput"></div>
+            <button onclick="exportMISExcel()">
+Export Excel
+</button>
+            <button onclick="exportMISPDF()">
+Export PDF
+</button>
+            <div id="misOutput"></div>
             
             <div id="whatIfCompare">
 
@@ -259,6 +258,8 @@ import {
 } from "./src/ui/audit-ui.js";
 import { renderForecastChart }
  from "./src/ui/forecast-chart.js";
+import { MISReportService }
+ from "../services/mis-report-service.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
@@ -271,6 +272,31 @@ window.renderForecastChart = renderForecastChart;
 window.runWhatIf = () => {
   const baseInputs = CalculatorController.calculateAll();
   CalculatorController.runWhatIf(baseInputs);
+};
+window.generateMIS = () => {
+
+  const scenarios =
+    StorageService.getAll();
+
+  const budgets =
+    BudgetService.getAll();
+
+  const forecasts =
+    ForecastService.getAll();
+
+  window.currentMIS =
+    MISReportService.buildReport({
+      scenarios,
+      budgets,
+      forecasts
+    });
+
+  if (window.currentMIS.kpis.scenarioCount === 0) {
+    alert("No approved scenarios");
+    return;
+  }
+
+  console.log(currentMIS);
 };
 
 window.loginUser = () => {

@@ -50,9 +50,19 @@ export const StorageService = {
     localStorage.setItem(KEY, JSON.stringify(all));
   },
 
-  getAll() {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
-  },
+  saveMIS(report) {
+
+  const mis = {
+    type: "MIS_SNAPSHOT",
+    generatedAt: new Date().toISOString(),
+    report
+  };
+
+  const all = this.getAll();
+  all.push(mis);
+
+  localStorage.setItem(KEY, JSON.stringify(all));
+},
 
   getScenarioVersions(id) {
     const all = this.getAll();
