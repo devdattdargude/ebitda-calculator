@@ -34,6 +34,7 @@
                 <option value="ACTUAL">Actual</option>
                 <option value="BUDGET">Budget</option>
                 <option value="FORECAST">Forecast</option>
+                <option value="WHAT_IF">What-If</option>
             </select>
             
             <h3>Cloud Sync</h3>
@@ -133,19 +134,32 @@ Executive Mode
         </div>
         
         <div class="card">
-            <h3>Forecast Drivers</h3>
+            <h3>What-If Sensitivity Lab</h3>
             
-            <input id="revGrowth"
-                   placeholder="Revenue Growth %">
-            <input id="costGrowth"
-                   placeholder="Cost Growth %">
-            <input id="forecastPeriods"
-                   placeholder="Periods (months)">
+            <input id="whatIfRevenuePct"
+                   placeholder="Revenue Change %">
+            <input id="whatIfCostPct"
+                   placeholder="Cost Change %">
+            <input id="whatIfSalaryPct"
+                   placeholder="Salary Change %">
             
-            <button onclick="applyForecast()">
-Apply Forecast
+            <button onclick="runWhatIf()">
+Run What-If
 </button>
-            <div id="forecastOutput"></div>
+            <div id="whatIfOutput"></div>
+            
+            <div id="whatIfCompare">
+
+Base EBITDA:
+<span id="baseEbitda"></span>
+
+What-If EBITDA:
+<span id="whatIfEbitda"></span>
+
+Impact:
+<span id="impactPct"></span>
+
+</div>
             
             <label>
 <input type="checkbox"
@@ -235,14 +249,16 @@ import { SyncService } from "../src/services/sync-service.js";
 import { ApprovalService } from "../src/services/approval-service.js";
 import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
-import { renderExecutive }
- from "./src/ui/executive-ui.js";
 import { renderVariance }
  from "./src/ui/variance-ui.js";
+import { renderExecutive }
+ from "./src/ui/executive-ui.js";
 import {
   loadTimeline,
   renderDiff
 } from "./src/ui/audit-ui.js";
+import { renderForecastChart }
+ from "./src/ui/forecast-chart.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
@@ -251,6 +267,11 @@ window.loadTimeline = loadTimeline;
 window.showVersionDiff = () => renderDiff(activeScenarioId);
 window.openExecutive = renderExecutive;
 window.showVariance = () => renderVariance(varianceProperty.value);
+window.renderForecastChart = renderForecastChart;
+window.runWhatIf = () => {
+  const baseInputs = CalculatorController.calculateAll();
+  CalculatorController.runWhatIf(baseInputs);
+};
 
 window.loginUser = () => {
   const n = userNameInput.value.trim();

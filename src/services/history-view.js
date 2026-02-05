@@ -11,7 +11,8 @@ export function renderHistory(containerId, property=null) {
     `<div>
       <b>${s.property}</b> — ${s.name}
       EBITDA: ${s.results.ebitda}
-      Status: ${s.status || 'DRAFT'}
+      Status: ${s.status}
+      ${s.scenarioType === "WHAT_IF" ? "🔮" : ""}
     </div>`
   ).join("");
 }

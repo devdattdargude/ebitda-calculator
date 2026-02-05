@@ -4,6 +4,7 @@ import { Formatter } from "../utils/formatting.js";
 import { StorageService } from "../services/storage.js";
 import { FormulaLock } from "../services/formula-lock.js";
 import { ForecastService } from "../services/forecast-service.js";
+import { WhatIfService } from "../services/whatif-service.js";
 
 export const CalculatorController = {
 
@@ -82,6 +83,64 @@ export const CalculatorController = {
 
   saveRun(name, data, results, property) {
     this.saveScenario(name, data, results, property);
+  },
+
+  runWhatIf(baseInputs) {
+
+    const deltas = {
+      revPct: Number(whatIfRevenuePct.value)||0,
+      costPct: Number(whatIfCostPct.value)||0,
+      salaryPct: Number(whatIfSalaryPct.value)||0
+    };
+
+    if (deltas.revPct < -90) {
+      throw "Revenue drop too extreme";
+    }
+
+    const variant =
+      WhatIfService.buildVariant(
+        baseInputs,
+        deltas
+      );
+
+    const results =
+      FinanceEngine.calculateAll(variant);
+
+    this.saveWhatIfRun(
+      variant,
+      results,
+      deltas
+    );
+
+    return results;
+  },
+
+  calculateImpact(baseEbitda, whatIfEbitda) {
+
+    const impactPct =
+      ((whatIfEbitda - baseEbitda)
+      / baseEbitda) * 100;
+
+    return impactPct;
+  },
+
+  saveWhatIfRun(variant, results, deltas) {
+
+    const scenario = {
+      id: Date.now(),
+      name: `What-If: ${variant.revenue}%, ${variant.costPct}%, ${variant.salaryPct}%`,
+      property: property,
+      scenarioType: "WHAT_IF",
+      parentScenarioId: activeScenarioId,
+      whatIfDrivers: deltas
+    };
+
+    return StorageService.saveScenario(
+      scenario.name,
+      variant,
+      results,
+      scenario.property
+    );
   },
 
   saveScenario(name, data, results, property, isForecastMode) {
