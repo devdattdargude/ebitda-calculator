@@ -4,6 +4,12 @@ export function exportCSV() {
 
   const rows = StorageService.getAll();
 
+  const unapproved = rows.filter(r => r.status !== "APPROVED");
+  if (unapproved.length > 0) {
+    alert("Only approved scenarios exportable");
+    return;
+  }
+
   const header = Object.keys(rows[0] || {}).join(",");
 
   const body = rows.map(r =>

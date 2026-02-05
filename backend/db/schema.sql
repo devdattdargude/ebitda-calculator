@@ -11,6 +11,10 @@ CREATE TABLE scenarios (
   name TEXT,
   property TEXT,
   owner_id UUID,
+  status TEXT DEFAULT 'DRAFT',
+  approved_by UUID,
+  approved_at TIMESTAMP,
+  approval_comment TEXT,
   updated_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT now()
 );

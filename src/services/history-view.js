@@ -11,6 +11,7 @@ export function renderHistory(containerId, property=null) {
     `<div>
       <b>${s.property}</b> — ${s.name}
       EBITDA: ${s.results.ebitda}
+      Status: ${s.status || 'DRAFT'}
     </div>`
   ).join("");
 }

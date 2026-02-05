@@ -50,4 +50,48 @@ r.get("/all", async (_,res)=>{
   res.send(rows.rows);
 });
 
+r.post("/approve", async (req,res)=>{
+
+  const {id, userId, comment} = req.body;
+
+  await db.query(
+    `update scenarios
+     set status='APPROVED',
+          approved_by=$1,
+          approved_at=now(),
+          approval_comment=$2
+     where id=$3`,
+    [userId, comment, id]
+  );
+
+  res.send({ok:true});
+});
+
+r.post("/reject", async (req,res)=>{
+
+  const {id, userId, comment} = req.body;
+
+  await db.query(
+    `update scenarios
+     set status='REJECTED',
+          approval_comment=$1
+     where id=$2`,
+    [comment, id]
+  );
+
+  res.send({ok:true});
+});
+
+r.post("/submit", async (req,res)=>{
+
+  await db.query(
+    `update scenarios
+     set status='SUBMITTED'
+     where id=$1`,
+    [req.body.id]
+  );
+
+  res.send({ok:true});
+});
+
 module.exports = r;

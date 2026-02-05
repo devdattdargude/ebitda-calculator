@@ -37,6 +37,14 @@
                 Pull from Cloud
             </button>
             
+            <h3>Approval Workflow</h3>
+            <textarea id="approvalComment"
+                      placeholder="Approval comment"></textarea>
+            <button onclick="submitScenario()">Submit</button>
+            <button onclick="approveScenario()">Approve</button>
+            <button onclick="rejectScenario()">Reject</button>
+            <div id="statusLabel"></div>
+            
             <h3>Excel Import</h3>
             <input type="file"
                    id="excelFile"
@@ -154,6 +162,7 @@ import { FormulaLock } from "../src/services/formula-lock.js";
 import { RoleService } from "../src/services/role-service.js";
 import { UserService } from "../src/services/user-service.js";
 import { SyncService } from "../src/services/sync-service.js";
+import { ApprovalService } from "../src/services/approval-service.js";
 import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
 import {
@@ -176,6 +185,33 @@ window.loginUser = () => {
 
 window.pushSync = () => SyncService.pushAll();
 window.pullSync = () => SyncService.pullAll();
+
+window.submitScenario = () =>
+  ApprovalService.submit(activeScenarioId);
+
+window.approveScenario = () => {
+
+  if (!RoleService.isAdmin())
+    return alert("Admin only");
+
+  ApprovalService.approve(
+    activeScenarioId,
+    UserService.currentUser.id,
+    approvalComment.value
+  );
+};
+
+window.rejectScenario = () => {
+
+  if (!RoleService.isAdmin())
+    return alert("Admin only");
+
+  ApprovalService.reject(
+    activeScenarioId,
+    UserService.currentUser.id,
+    approvalComment.value
+  );
+};
 
 window.renderCharts = function () {
   renderTrendChart("trendChart");

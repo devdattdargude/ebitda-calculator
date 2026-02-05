@@ -60,6 +60,11 @@ export const CalculatorController = {
 
   loadInputs(data) {
 
+    if (data.status === "APPROVED") {
+      alert("Approved scenario is locked");
+      return;
+    }
+
     Object.keys(data).forEach(k => {
       const el = document.querySelector(
         `[name="${k}"]` 
