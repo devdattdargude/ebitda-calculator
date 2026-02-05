@@ -22,6 +22,21 @@
             </select>
             <button id="lockToggle">Toggle Formula Lock</button>
             
+            <h3>User Login</h3>
+            <input id="userNameInput"
+                   placeholder="Enter user name">
+            <button onclick="loginUser()">
+                Login
+            </button>
+            
+            <h3>Cloud Sync</h3>
+            <button onclick="pushSync()">
+                Push to Cloud
+            </button>
+            <button onclick="pullSync()">
+                Pull from Cloud
+            </button>
+            
             <h3>Excel Import</h3>
             <input type="file"
                    id="excelFile"
@@ -137,6 +152,8 @@ import {
 import { bindRoleSelector } from "./src/ui/role-ui.js";
 import { FormulaLock } from "../src/services/formula-lock.js";
 import { RoleService } from "../src/services/role-service.js";
+import { UserService } from "../src/services/user-service.js";
+import { SyncService } from "../src/services/sync-service.js";
 import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
 import {
@@ -149,6 +166,16 @@ window.exportCSV = exportCSV;
 window.downloadTemplate = downloadTemplate;
 window.loadTimeline = loadTimeline;
 window.showVersionDiff = () => renderDiff(activeScenarioId);
+
+window.loginUser = () => {
+  const n = userNameInput.value.trim();
+  if (!n) return alert("Enter name");
+
+  UserService.login(n);
+};
+
+window.pushSync = () => SyncService.pushAll();
+window.pullSync = () => SyncService.pullAll();
 
 window.renderCharts = function () {
   renderTrendChart("trendChart");
