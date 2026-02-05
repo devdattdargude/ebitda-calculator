@@ -94,4 +94,16 @@ r.post("/submit", async (req,res)=>{
   res.send({ok:true});
 });
 
+r.get("/executive", async (_,res)=>{
+
+  const rows = await db.query(
+    `select property,
+          sum((results->>'ebitda')::numeric)
+   from scenario_versions
+   group by property`
+  );
+
+  res.send(rows.rows);
+});
+
 module.exports = r;

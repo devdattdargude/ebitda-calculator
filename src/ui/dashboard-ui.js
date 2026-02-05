@@ -1,40 +1,45 @@
 import { DashboardService } from "../services/dashboard.js";
+import { ExecutiveService } from "../services/executive-service.js";
 
 let trendChart;
 let propertyChart;
 
 export function renderTrendChart(canvasId) {
 
-  const d = DashboardService.scenarioTrend();
+  const approved = ExecutiveService.approvedOnly();
+
+  const ctx = document.getElementById(canvasId).getContext("2d");
 
   if (trendChart) trendChart.destroy();
 
-  trendChart = new Chart(
-    document.getElementById(canvasId),
-    {
-      type: "bar",
-      data: {
-        labels: d.labels,
-        datasets: [{ data: d.values }]
-      }
+  trendChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: approved.map(s => s.property),
+      datasets: [{
+        label: "EBITDA Trend",
+        data: approved.map(s => s.results.ebitda)
+      }]
     }
-  );
+  });
 }
 
 export function renderPropertyChart(canvasId) {
 
-  const d = DashboardService.propertyBreakdown();
+  const approved = ExecutiveService.approvedOnly();
+
+  const ctx = document.getElementById(canvasId).getContext("2d");
 
   if (propertyChart) propertyChart.destroy();
 
-  propertyChart = new Chart(
-    document.getElementById(canvasId),
-    {
-      type: "pie",
-      data: {
-        labels: d.labels,
-        datasets: [{ data: d.values }]
-      }
+  propertyChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: approved.map(s => s.property),
+      datasets: [{
+        label: "EBITDA by Property",
+        data: approved.map(s => s.results.ebitda)
+      }]
     }
-  );
+  });
 }

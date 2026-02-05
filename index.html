@@ -37,6 +37,10 @@
                 Pull from Cloud
             </button>
             
+            <button onclick="openExecutive()">
+Executive Mode
+</button>
+            
             <h3>Approval Workflow</h3>
             <textarea id="approvalComment"
                       placeholder="Approval comment"></textarea>
@@ -122,6 +126,33 @@
         </div>
         
         <div class="card">
+            <h2>Executive Dashboard</h2>
+            
+            <div>Total Approved EBITDA:
+ <span id="kpiEbitda"></span>
+</div>
+
+<div>Average Margin:
+ <span id="kpiMargin"></span>
+</div>
+
+<div>Pending Approvals:
+ <span id="kpiPending"></span>
+</div>
+
+<h3>Property Ranking</h3>
+<ul id="rankList"></ul>
+
+<h3>Risk Flags</h3>
+<ul id="riskList"></ul>
+
+<div>
+Submitted Awaiting Approval:
+ <span id="pipelineCount"></span>
+</div>
+        </div>
+        
+        <div class="card">
             <h3>Portfolio EBITDA</h3>
             <div id="portfolioBox"></div>
             <button onclick="renderPortfolio()">Refresh Portfolio</button>
@@ -165,6 +196,8 @@ import { SyncService } from "../src/services/sync-service.js";
 import { ApprovalService } from "../src/services/approval-service.js";
 import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
+import { renderExecutive }
+ from "./src/ui/executive-ui.js";
 import {
   loadTimeline,
   renderDiff
@@ -175,6 +208,7 @@ window.exportCSV = exportCSV;
 window.downloadTemplate = downloadTemplate;
 window.loadTimeline = loadTimeline;
 window.showVersionDiff = () => renderDiff(activeScenarioId);
+window.openExecutive = renderExecutive;
 
 window.loginUser = () => {
   const n = userNameInput.value.trim();
