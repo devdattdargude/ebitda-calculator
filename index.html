@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EBITDA Calculator V4</title>
     <link rel="stylesheet" href="src/ui/styles/calculator.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -79,6 +80,15 @@
             <div id="portfolioBox"></div>
             <button onclick="renderPortfolio()">Refresh Portfolio</button>
         </div>
+        
+        <div class="card">
+            <h3>Dashboard</h3>
+            <div>Total Scenarios: <span id="scenarioCount"></span></div>
+            <div>Average EBITDA: <span id="avgEbitda"></span></div>
+            <canvas id="trendChart"></canvas>
+            <canvas id="propertyChart"></canvas>
+            <button onclick="renderCharts()">Refresh Charts</button>
+        </div>
     </div>
     
     <script type="module">
@@ -87,9 +97,21 @@ import { renderHistory } from "../src/services/history-view.js";
 import { exportCSV } from "../src/services/export.js";
 import { PropertyRegistry } from "../src/services/property-registry.js";
 import { PortfolioService } from "../src/services/portfolio.js";
+import { DashboardService } from "../src/services/dashboard.js";
+import {
+  renderTrendChart,
+  renderPropertyChart
+} from "./src/ui/dashboard-ui.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
+
+window.renderCharts = function () {
+  renderTrendChart("trendChart");
+  renderPropertyChart("propertyChart");
+  scenarioCount.innerText = DashboardService.count();
+  avgEbitda.innerText = DashboardService.averageEBITDA().toFixed(2);
+};
 
 window.renderPortfolio = function () {
 
@@ -149,6 +171,8 @@ window.runCalc = () => {
     r,
     propertySelect.value
   );
+
+  renderCharts();
 };
 </script>
 </body>
