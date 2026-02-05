@@ -113,6 +113,14 @@
             <canvas id="propertyChart"></canvas>
             <button onclick="renderCharts()">Refresh Charts</button>
         </div>
+        
+        <div class="card">
+            <h3>Scenario Timeline</h3>
+            <select id="versionSelect"></select>
+            <button onclick="showVersionDiff()">Compare Last Two</button>
+            <div id="diffOutput"></div>
+            <canvas id="compareChart"></canvas>
+        </div>
     </div>
     
     <script type="module">
@@ -131,10 +139,16 @@ import { FormulaLock } from "../src/services/formula-lock.js";
 import { RoleService } from "../src/services/role-service.js";
 import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
+import {
+  loadTimeline,
+  renderDiff
+} from "./src/ui/audit-ui.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
 window.downloadTemplate = downloadTemplate;
+window.loadTimeline = loadTimeline;
+window.showVersionDiff = () => renderDiff(activeScenarioId);
 
 window.renderCharts = function () {
   renderTrendChart("trendChart");
