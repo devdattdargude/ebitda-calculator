@@ -1,8 +1,12 @@
 export const ApprovalService = {
 
+  getApiUrl() {
+    return process.env.API_URL || 'http://localhost:4001';
+  },
+
   async getPendingCount() {
     try {
-      const response = await fetch("http://localhost:4001/api/scenario/all");
+      const response = await fetch(`${this.getApiUrl()}/api/scenario/all`);
       const scenarios = await response.json();
       return scenarios.filter(s => s.status === 'SUBMITTED').length;
     } catch (error) {
@@ -13,7 +17,7 @@ export const ApprovalService = {
 
   async getPendingApprovals() {
     try {
-      const response = await fetch("http://localhost:4001/api/scenario/all");
+      const response = await fetch(`${this.getApiUrl()}/api/scenario/all`);
       const scenarios = await response.json();
       return scenarios.filter(s => s.status === 'SUBMITTED').map(s => ({
         id: s.id,
@@ -27,7 +31,7 @@ export const ApprovalService = {
   },
 
   async submit(id) {
-    await fetch("http://localhost:4001/api/scenario/submit",{
+    await fetch(`${this.getApiUrl()}/api/scenario/submit`,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({id})
@@ -35,7 +39,7 @@ export const ApprovalService = {
   },
 
   async approve(id,userId,comment) {
-    await fetch("http://localhost:4001/api/scenario/approve",{
+    await fetch(`${this.getApiUrl()}/api/scenario/approve`,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({id,userId,comment})
@@ -43,7 +47,7 @@ export const ApprovalService = {
   },
 
   async reject(id,userId,comment) {
-    await fetch("http://localhost:4001/api/scenario/reject",{
+    await fetch(`${this.getApiUrl()}/api/scenario/reject`,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({id,userId,comment})
