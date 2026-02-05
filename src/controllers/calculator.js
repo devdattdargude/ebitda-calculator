@@ -53,8 +53,8 @@ export const CalculatorController = {
     document.querySelectorAll("input").forEach(i => i.value = "");
   },
 
-  saveRun(name, data, results) {
-    StorageService.saveScenario(name, data, results);
+  saveRun(name, data, results, property) {
+    StorageService.saveScenario(name, data, results, property);
   }
 
 };

@@ -16,6 +16,9 @@
             <label for="scenarioName">Scenario Name</label>
             <input id="scenarioName" type="text" placeholder="Enter scenario name">
             
+            <label for="propertySelect">Property</label>
+            <select id="propertySelect"></select>
+            
             <label for="revenue">Revenue</label>
             <input id="revenue" type="number" placeholder="Enter revenue">
             <div class="error" id="revenue_error"></div>
@@ -70,15 +73,44 @@
             <button onclick="renderHistory('historyBox')">Refresh History</button>
             <button onclick="exportCSV()">Export CSV</button>
         </div>
+        
+        <div class="card">
+            <h3>Portfolio EBITDA</h3>
+            <div id="portfolioBox"></div>
+            <button onclick="renderPortfolio()">Refresh Portfolio</button>
+        </div>
     </div>
     
     <script type="module">
 import { CalculatorController } from "./src/controllers/calculator.js";
 import { renderHistory } from "../src/services/history-view.js";
 import { exportCSV } from "../src/services/export.js";
+import { PropertyRegistry } from "../src/services/property-registry.js";
+import { PortfolioService } from "../src/services/portfolio.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
+
+window.renderPortfolio = function () {
+
+  const totals = PortfolioService.totals();
+  const byProp = PortfolioService.byProperty();
+
+  portfolioBox.innerHTML =
+    `<b>Total EBITDA:</b> ${totals.ebitda.toFixed(2)}<br>` +
+    Object.entries(byProp)
+      .map(([p,v]) => `${p}: ${v.toFixed(2)}`)
+      .join("<br>");
+};
+
+function loadProperties() {
+  propertySelect.innerHTML =
+    PropertyRegistry.getAll()
+      .map(p => `<option>${p}</option>`)
+      .join("");
+}
+
+loadProperties();
 
 window.runCalc = () => {
 
@@ -114,7 +146,8 @@ window.runCalc = () => {
   CalculatorController.saveRun(
     scenarioName.value || "Scenario",
     data,
-    r
+    r,
+    propertySelect.value
   );
 };
 </script>

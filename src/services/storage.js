@@ -2,11 +2,12 @@ const KEY = "ebitda_scenarios_v1";
 
 export const StorageService = {
 
-  saveScenario(name, data, results) {
+  saveScenario(name, data, results, property) {
     const all = this.getAll();
 
     all.push({
       id: Date.now(),
+      property,
       name,
       data,
       results,
