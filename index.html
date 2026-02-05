@@ -29,6 +29,12 @@
                 Login
             </button>
             
+            <h3>Scenario Type</h3>
+            <select id="scenarioType">
+                <option value="ACTUAL">Actual</option>
+                <option value="BUDGET">Budget</option>
+            </select>
+            
             <h3>Cloud Sync</h3>
             <button onclick="pushSync()">
                 Push to Cloud
@@ -146,6 +152,16 @@ Executive Mode
 <h3>Risk Flags</h3>
 <ul id="riskList"></ul>
 
+<h3>Budget vs Actual</h3>
+
+<select id="varianceProperty"></select>
+
+<button onclick="showVariance()">
+Show Variance
+</button>
+
+<div id="varianceOutput"></div>
+
 <div>
 Submitted Awaiting Approval:
  <span id="pipelineCount"></span>
@@ -198,6 +214,8 @@ import { importExcelFile } from "./src/controllers/import-controller.js";
 import { downloadTemplate } from "../src/services/template-export.js";
 import { renderExecutive }
  from "./src/ui/executive-ui.js";
+import { renderVariance }
+ from "./src/ui/variance-ui.js";
 import {
   loadTimeline,
   renderDiff
@@ -209,6 +227,7 @@ window.downloadTemplate = downloadTemplate;
 window.loadTimeline = loadTimeline;
 window.showVersionDiff = () => renderDiff(activeScenarioId);
 window.openExecutive = renderExecutive;
+window.showVariance = () => renderVariance(varianceProperty.value);
 
 window.loginUser = () => {
   const n = userNameInput.value.trim();
@@ -284,6 +303,10 @@ window.importExcel = () => {
 
 function loadProperties() {
   propertySelect.innerHTML =
+    PropertyRegistry.getAll()
+      .map(p => `<option>${p}</option>`)
+      .join("");
+  varianceProperty.innerHTML =
     PropertyRegistry.getAll()
       .map(p => `<option>${p}</option>`)
       .join("");

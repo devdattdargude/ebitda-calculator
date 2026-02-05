@@ -15,12 +15,11 @@ r.post("/save", async (req,res)=>{
 
   await db.query(
     `insert into scenarios
-     (id,name,property,owner_id,updated_at)
-     values ($1,$2,$3,$4,$5)
-     on conflict (id)
-     do update set updated_at=$5`,
+     (id,name,property,owner_id,
+      updated_at,scenario_type)
+     values ($1,$2,$3,$4,$5,$6)`,
     [s.id,s.name,s.property,
-     s.ownerId,s.updatedAt]
+     s.ownerId,s.updatedAt,s.scenarioType]
   );
 
   await db.query(
@@ -98,9 +97,39 @@ r.get("/executive", async (_,res)=>{
 
   const rows = await db.query(
     `select property,
-          sum((results->>'ebitda')::numeric)
-   from scenario_versions
+          sum(case when scenario_type='ACTUAL'
+          then (results->>'ebitda')::numeric end) as actual,
+ sum(case when scenario_type='BUDGET'
+          then (results->>'ebitda')::numeric end) as budget
+   from scenario_versions v
+   join scenarios s
+     on s.id=v.scenario_id
    group by property`
+  );
+
+  res.send(rows.rows);
+});
+
+r.get("/variance", async (req,res)=>{
+
+  const { property } = req.query;
+
+  const rows = await db.query(
+    `select
+      case when scenario_type='ACTUAL'
+          then (results->>'ebitda')::numeric end) as actual,
+      case when scenario_type='BUDGET'
+          then (results->>'ebitda')::numeric end) as budget,
+      s.scenario_type,
+      s.name,
+      s.property,
+      s.owner_id,
+      s.updated_at
+   from scenarios s
+   join scenario_versions v
+     on s.id=v.scenario_id
+     where s.property=$1
+    order by s.updated_at desc`
   );
 
   res.send(rows.rows);

@@ -46,7 +46,21 @@ export const ExecutiveService = {
       .sort((a,b)=>b[1]-a[1]);
   },
 
-  riskFlags() {
+  totalVariance() {
+
+  const props =
+   PropertyRegistry.list();
+
+ return props
+  .map(p =>
+    VarianceService.byProperty(p))
+  .filter(Boolean)
+  .reduce((a,v)=>a+v.variance,0);
+}
+
+},
+
+riskFlags() {
 
     return this.approvedOnly()
       .filter(s =>
@@ -57,6 +71,19 @@ export const ExecutiveService = {
         name: s.name,
         property: s.property
       }));
+  },
+
+  varianceRiskFlag(v) {
+
+    if (v.variancePct < -15) {
+      return "⚠ Over Budget";
+    }
+
+    if (v.variancePct > 15) {
+      return "⚠ Over Budget";
+    }
+
+    return "";
   }
 
 };

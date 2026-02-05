@@ -17,10 +17,12 @@ export const StorageService = {
       ownerId: UserService.currentUser?.id || "na",
       ts: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      scenarioType: scenarioType.value,
       audit: {
         role: RoleService.currentRole,
         version: "v6",
-        savedAt: new Date().toISOString()
+        savedAt: new Date().toISOString(),
+        approvalStatus: scenario.status
       }
     };
 

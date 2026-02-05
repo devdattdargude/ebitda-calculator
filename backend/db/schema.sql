@@ -15,6 +15,7 @@ CREATE TABLE scenarios (
   approved_by UUID,
   approved_at TIMESTAMP,
   approval_comment TEXT,
+  scenario_type TEXT DEFAULT 'ACTUAL',
   updated_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT now()
 );
