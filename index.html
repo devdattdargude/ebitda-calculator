@@ -6,6 +6,7 @@
     <title>EBITDA Calculator V4</title>
     <link rel="stylesheet" href="src/ui/styles/calculator.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -20,6 +21,17 @@
                 <option value="admin">Admin</option>
             </select>
             <button id="lockToggle">Toggle Formula Lock</button>
+            
+            <h3>Excel Import</h3>
+            <input type="file"
+                   id="excelFile"
+                   accept=".xlsx,.xls" />
+            <button onclick="importExcel()">
+                Import Scenario
+            </button>
+            <button onclick="downloadTemplate()">
+                Download Template
+            </button>
         </div>
         
         <div class="card">
@@ -117,9 +129,12 @@ import {
 import { bindRoleSelector } from "./src/ui/role-ui.js";
 import { FormulaLock } from "../src/services/formula-lock.js";
 import { RoleService } from "../src/services/role-service.js";
+import { importExcelFile } from "./src/controllers/import-controller.js";
+import { downloadTemplate } from "../src/services/template-export.js";
 
 window.renderHistory = renderHistory;
 window.exportCSV = exportCSV;
+window.downloadTemplate = downloadTemplate;
 
 window.renderCharts = function () {
   renderTrendChart("trendChart");
@@ -143,6 +158,17 @@ window.renderPortfolio = function () {
 window.showAudit = function(s) {
   auditPanel.innerText =
     `${s.audit.role} | ${s.audit.savedAt}`;
+};
+
+window.importExcel = () => {
+
+  const f =
+    document.getElementById("excelFile")
+      .files[0];
+
+  if (!f) return alert("Select file");
+
+  importExcelFile(f);
 };
 
 function loadProperties() {

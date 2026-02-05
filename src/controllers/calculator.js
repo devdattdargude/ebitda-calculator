@@ -58,6 +58,22 @@ export const CalculatorController = {
     document.querySelectorAll("input").forEach(i => i.value = "");
   },
 
+  loadInputs(data) {
+
+    Object.keys(data).forEach(k => {
+      const el = document.querySelector(
+        `[name="${k}"]` 
+      );
+
+      if (el) el.value = data[k];
+    });
+
+    if (data.ScenarioName) {
+      scenarioNameInput.value =
+        data.ScenarioName;
+    }
+  },
+
   saveRun(name, data, results, property) {
     StorageService.saveScenario(name, data, results, property);
   }
