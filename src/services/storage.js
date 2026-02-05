@@ -64,6 +64,19 @@ export const StorageService = {
   localStorage.setItem(KEY, JSON.stringify(all));
 },
 
+checkAlerts(scenario) {
+
+  const budgets = BudgetService.getAll();
+
+  const alerts = AlertService.checkScenario(scenario, budgets);
+
+  if (alerts.length > 0) {
+    AlertLogService.store(scenario.id, alerts);
+  }
+
+  return alerts;
+},
+
   getScenarioVersions(id) {
     const all = this.getAll();
     return all.find(s => s.id === id)?.versions || [];

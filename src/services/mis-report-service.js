@@ -35,7 +35,8 @@ export const MISReportService = {
       scenarios: approved,
       budgets: budgets,
       forecasts: forecasts,
-      properties: this.buildPropertySection(approved)
+      properties: this.buildPropertySection(approved),
+      alerts: AlertLogService.getAll()
     };
   },
 
