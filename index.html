@@ -13,6 +13,9 @@
         <div class="card">
             <h2>Inputs</h2>
             
+            <label for="scenarioName">Scenario Name</label>
+            <input id="scenarioName" type="text" placeholder="Enter scenario name">
+            
             <label for="revenue">Revenue</label>
             <input id="revenue" type="number" placeholder="Enter revenue">
             <div class="error" id="revenue_error"></div>
@@ -60,10 +63,22 @@
             <p>Per Bed EBITDA: <span id="perBed">0</span></p>
             <p>Per Seat EBITDA: <span id="perSeat">0</span></p>
         </div>
+        
+        <div class="card">
+            <h3>Saved Scenarios</h3>
+            <div id="historyBox"></div>
+            <button onclick="renderHistory('historyBox')">Refresh History</button>
+            <button onclick="exportCSV()">Export CSV</button>
+        </div>
     </div>
     
     <script type="module">
 import { CalculatorController } from "./src/controllers/calculator.js";
+import { renderHistory } from "../src/services/history-view.js";
+import { exportCSV } from "../src/services/export.js";
+
+window.renderHistory = renderHistory;
+window.exportCSV = exportCSV;
 
 window.runCalc = () => {
 
@@ -95,6 +110,12 @@ window.runCalc = () => {
   operatingProfit.innerText = r.operatingProfit.toFixed(2);
   perBed.innerText = r.perBed.toFixed(2);
   perSeat.innerText = r.perSeat.toFixed(2);
+
+  CalculatorController.saveRun(
+    scenarioName.value || "Scenario",
+    data,
+    r
+  );
 };
 </script>
 </body>

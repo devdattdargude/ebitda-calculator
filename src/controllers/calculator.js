@@ -1,6 +1,7 @@
 import { validateField } from "../core/validation.js";
 import { FinanceEngine } from "../core/finance-engine.js";
 import { Formatter } from "../utils/formatting.js";
+import { StorageService } from "../services/storage.js";
 
 export const CalculatorController = {
 
@@ -50,6 +51,10 @@ export const CalculatorController = {
 
   resetAll() {
     document.querySelectorAll("input").forEach(i => i.value = "");
+  },
+
+  saveRun(name, data, results) {
+    StorageService.saveScenario(name, data, results);
   }
 
 };
