@@ -32,6 +32,10 @@ export const ForecastService = {
       )
   };
 
+  },
+
+  getAll() { 
+    return []; 
   }
 
 };

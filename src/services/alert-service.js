@@ -3,6 +3,39 @@ import { AlertRules }
 
 export const AlertService = {
 
+  async load() {
+    // Initialize alerts if needed
+    console.log('AlertService loaded');
+  },
+
+  async getActiveAlerts() {
+    // Mock alerts for testing
+    return [
+      {
+        id: '1',
+        severity: 'medium',
+        title: 'EBITDA Variance Alert',
+        message: 'Property A EBITDA is 15% below budget',
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: '2',
+        severity: 'low',
+        title: 'Data Sync Reminder',
+        message: 'Last data sync was 2 hours ago',
+        timestamp: new Date(Date.now() - 7200000).toISOString()
+      }
+    ];
+  },
+
+  async dismissAlert(alertId) {
+    console.log(`Alert ${alertId} dismissed`);
+  },
+
+  async setOverride(enabled) {
+    console.log(`Alert override ${enabled ? 'enabled' : 'disabled'}`);
+  },
+
   checkScenario(
     scenario,
     budget

@@ -19,6 +19,14 @@ export const CalculatorController = {
     return errors;
   },
 
+  async calculate(data) {
+    return this.calculateAll(data);
+  },
+
+  async toggleLock() {
+    return FormulaLock.toggle();
+  },
+
   calculateAll(data, isForecastMode = false) {
 
     if (!FormulaLock.isLocked()) {

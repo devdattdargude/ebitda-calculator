@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBITDA Finance Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dashboard Container -->
+    <div id="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>EBITDA Finance Platform</h1>
+                </div>
+                <div class="current-view">
+                    <span id="current-view-name">Dashboard</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="role-badge" id="role-badge">
+                        <span class="role-name">Viewer</span>
+                    </div>
+                    <div class="user-profile">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="username">Guest User</span>
+                    </div>
+                    <button id="logout-btn" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="dashboard-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li class="nav-item active" data-panel="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </li>
+                        <li class="nav-item" data-panel="calculator">
+                            <i class="fas fa-calculator"></i>
+                            <span>Calculator</span>
+                        </li>
+                        <li class="nav-item" data-panel="scenarios">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Scenarios</span>
+                        </li>
+                        <li class="nav-item" data-panel="portfolio">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Portfolio</span>
+                        </li>
+                        <li class="nav-item" data-panel="audit">
+                            <i class="fas fa-history"></i>
+                            <span>Audit Trail</span>
+                        </li>
+                        <li class="nav-item" data-panel="alerts">
+                            <i class="fas fa-bell"></i>
+                            <span>Alerts</span>
+                            <span class="badge" id="alert-count">0</span>
+                        </li>
+                        <li class="nav-item" data-panel="reports">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>MIS Reports</span>
+                        </li>
+                        <li class="nav-item admin-only" data-panel="admin">
+                            <i class="fas fa-cog"></i>
+                            <span>Admin</span>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <div class="sidebar-footer">
+                    <div class="system-status">
+                        <div class="status-indicator active"></div>
+                        <span>System Online</span>
+                    </div>
+                    <div class="last-sync" id="last-sync">
+                        Last sync: --
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Dashboard Panel -->
+                <div id="dashboard-panel" class="content-panel active">
+                    <!-- KPI Cards Row -->
+                    <div class="kpi-section">
+                        <h2 class="section-title">Key Performance Indicators</h2>
+                        <div class="kpi-grid">
+                            <div class="kpi-card">
+                                <div class="kpi-header">
+                                    <h3>Total EBITDA</h3>
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div class="kpi-value" id="kpi-ebitda">$0.00</div>
+                                <div class="kpi-change positive">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>0% vs Budget</span>
+                                </div>
+                            </div>
+                            
+                            <div class="kpi-card">
+                                <div class="kpi-header">
+                                    <h3>EBITDA Margin</h3>
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div class="kpi-value" id="kpi-margin">0.0%</div>
+                                <div class="kpi-change negative">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span>0% vs Target</span>
+                                </div>
+                            </div>
+                            
+                            <div class="kpi-card">
+                                <div class="kpi-header">
+                                    <h3>Active Properties</h3>
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="kpi-value" id="kpi-properties">0</div>
+                                <div class="kpi-change neutral">
+                                    <span>-- vs Last Month</span>
+                                </div>
+                            </div>
+                            
+                            <div class="kpi-card">
+                                <div class="kpi-header">
+                                    <h3>Pending Approvals</h3>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="kpi-value" id="kpi-pending">0</div>
+                                <div class="kpi-change warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Requires Attention</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>EBITDA Trend</h3>
+                                <select id="trend-period" class="period-selector">
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                            <canvas id="ebitda-trend-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>Property Performance</h3>
+                                <button class="btn-refresh" id="refresh-chart">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            <canvas id="property-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Scenario Table -->
+                    <div class="scenarios-section">
+                        <div class="section-header">
+                            <h2 class="section-title">Recent Scenarios</h2>
+                            <button id="view-all-scenarios" class="btn-secondary">
+                                View All
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table id="scenarios-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Property</th>
+                                        <th>Type</th>
+                                        <th>EBITDA</th>
+                                        <th>Margin</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scenarios-table-body">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Panel -->
+                <div id="calculator-panel" class="content-panel">
+                    <!-- Calculator content will be loaded here -->
+                    <div class="panel-header">
+                        <h2>EBITDA Calculator</h2>
+                        <div class="panel-actions">
+                            <button id="calc-new-scenario" class="btn-primary">
+                                <i class="fas fa-plus"></i> New Scenario
+                            </button>
+                            <button id="calc-import-excel" class="btn-secondary">
+                                <i class="fas fa-file-import"></i> Import Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div id="calculator-container">
+                        <!-- Calculator will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Scenarios Panel -->
+                <div id="scenarios-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>Scenario Management</h2>
+                        <div class="panel-actions">
+                            <button id="scenario-create" class="btn-primary">
+                                <i class="fas fa-plus"></i> Create Scenario
+                            </button>
+                            <button id="scenario-export" class="btn-secondary">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div id="scenarios-list-container">
+                        <!-- Scenarios list will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Portfolio Panel -->
+                <div id="portfolio-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>Portfolio Overview</h2>
+                        <div class="panel-actions">
+                            <button id="refresh-portfolio" class="btn-secondary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div id="portfolio-container">
+                        <!-- Portfolio content will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Audit Panel -->
+                <div id="audit-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>Audit Trail</h2>
+                        <div class="panel-actions">
+                            <button id="export-audit" class="btn-secondary">
+                                <i class="fas fa-download"></i> Export Log
+                            </button>
+                        </div>
+                    </div>
+                    <div id="audit-container">
+                        <!-- Audit trail will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Alerts Panel -->
+                <div id="alerts-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>System Alerts</h2>
+                        <div class="panel-actions">
+                            <button id="mark-all-read" class="btn-secondary">
+                                <i class="fas fa-check-double"></i> Mark All Read
+                            </button>
+                        </div>
+                    </div>
+                    <div id="alerts-container">
+                        <!-- Alerts will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Reports Panel -->
+                <div id="reports-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>MIS Reports</h2>
+                        <div class="panel-actions">
+                            <button id="generate-report" class="btn-primary">
+                                <i class="fas fa-file-excel"></i> Generate Report
+                            </button>
+                            <button id="schedule-report" class="btn-secondary">
+                                <i class="fas fa-calendar-alt"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                    <div id="reports-container">
+                        <!-- Reports will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Admin Panel (Admin only) -->
+                <div id="admin-panel" class="content-panel">
+                    <div class="panel-header">
+                        <h2>Administration</h2>
+                        <div class="panel-actions">
+                            <button id="system-health" class="btn-secondary">
+                                <i class="fas fa-heartbeat"></i> System Health
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-grid">
+                        <!-- Approval Panel -->
+                        <div class="admin-card">
+                            <h3>Pending Approvals</h3>
+                            <div id="approval-container">
+                                <!-- Approval items will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Alert Override Panel -->
+                        <div class="admin-card">
+                            <h3>Alert Management</h3>
+                            <div class="alert-controls">
+                                <div class="form-group">
+                                    <label for="alert-threshold">EBITDA Alert Threshold (%)</label>
+                                    <input type="number" id="alert-threshold" min="0" max="100" value="5" 
+                                           class="form-control" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="override-alerts" class="toggle-switch">
+                                        <span>Override All Alerts</span>
+                                    </label>
+                                </div>
+                                <button id="save-alert-settings" class="btn-primary">
+                                    Save Settings
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Formula Controls -->
+                        <div class="admin-card">
+                            <h3>Formula Management</h3>
+                            <div class="formula-controls">
+                                <div class="form-group">
+                                    <label>Formula Lock Status</label>
+                                    <div class="status-indicator locked">
+                                        <i class="fas fa-lock"></i>
+                                        <span>Locked</span>
+                                    </div>
+                                </div>
+                                <button id="unlock-formulas" class="btn-danger">
+                                    <i class="fas fa-unlock"></i>
+                                    Unlock Formulas
+                                </button>
+                                <button id="recalculate-all" class="btn-secondary">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Recalculate All
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- User Management -->
+                        <div class="admin-card">
+                            <h3>User Management</h3>
+                            <div id="user-management-container">
+                                <!-- User list will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-left">
+                <span id="status-message">Ready</span>
+                <span class="status-separator">|</span>
+                <span id="formula-status">Formulas: Locked</span>
+            </div>
+            <div class="status-right">
+                <span id="current-time">--:--:--</span>
+                <span class="status-separator">|</span>
+                <span id="data-version">v1.0.0</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>

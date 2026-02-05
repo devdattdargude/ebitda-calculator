@@ -12,5 +12,5 @@ app.use("/api/scenario",
 app.use("/api/user",
   require("./routes/user"));
 
-app.listen(4000,
-  () => console.log("API running"));
+app.listen(4001,
+  () => console.log("API running on port 4001"));
